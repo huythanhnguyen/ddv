@@ -58,13 +58,13 @@ def product_search_tool(user_input: str) -> Dict[str, Any]:
             # Derive pricing
             current_price = p.get('price_vnd')
             original_price = p.get('price_listed_vnd')
-            discount_label = None
+            discount_label = ""
             if isinstance(current_price, (int, float)) and isinstance(original_price, (int, float)) and original_price and original_price > current_price:
                 try:
                     discount_pct = round((original_price - current_price) / original_price * 100)
                     discount_label = f"-{discount_pct}%"
                 except Exception:
-                    discount_label = None
+                    discount_label = ""
 
             # Image and URL
             images = p.get('images') or []
@@ -75,9 +75,9 @@ def product_search_tool(user_input: str) -> Dict[str, Any]:
                 "name": p.get('name', ''),
                 "price": {
                     "current": current_price if current_price is not None else 0,
-                    "original": original_price,
+                    "original": original_price if isinstance(original_price, (int, float)) else 0,
                     "currency": "VND",
-                    "discount": discount_label
+                    "discount": discount_label or ""
                 },
                 "image": {"url": image_url},
                 "productUrl": p.get('url', ''),
@@ -453,13 +453,13 @@ def integrated_recommendation_tool(user_input: str) -> Dict[str, Any]:
         for p in enriched_recommendations:
             current_price = p.get('price_vnd')
             original_price = p.get('price_listed_vnd')
-            discount_label = None
+            discount_label = ""
             if isinstance(current_price, (int, float)) and isinstance(original_price, (int, float)) and original_price and original_price > current_price:
                 try:
                     discount_pct = round((original_price - current_price) / original_price * 100)
                     discount_label = f"-{discount_pct}%"
                 except Exception:
-                    discount_label = None
+                    discount_label = ""
 
             images = p.get('images') or []
             image_url = images[0] if images else ''
@@ -469,9 +469,9 @@ def integrated_recommendation_tool(user_input: str) -> Dict[str, Any]:
                 "name": p.get('name', ''),
                 "price": {
                     "current": current_price if current_price is not None else 0,
-                    "original": original_price,
+                    "original": original_price if isinstance(original_price, (int, float)) else 0,
                     "currency": "VND",
-                    "discount": discount_label
+                    "discount": discount_label or ""
                 },
                 "image": {"url": image_url},
                 "productUrl": p.get('url', ''),
