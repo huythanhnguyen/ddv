@@ -27,8 +27,9 @@ else:
 class ModelConfiguration:
     """Configuration for DDV Product Advisor models and parameters."""
 
+    # Use stable, supported Gemini models
     primary_model: str = "gemini-2.0-flash"
-    worker_model: str = "gemini-2.5-flash"
+    worker_model: str = "gemini-2.0-flash"
 
 
 config = ModelConfiguration()

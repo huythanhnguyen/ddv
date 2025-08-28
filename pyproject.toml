@@ -49,6 +49,9 @@ dependencies = [
     # Logging and monitoring
     "structlog>=23.0.0",
     "rich>=13.0.0",
+    
+    # Search engine
+    "whoosh>=2.7.4",
 ]
 
 [project.optional-dependencies]

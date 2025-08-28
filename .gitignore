@@ -268,6 +268,3 @@ docs/_build/
 
 # TypeScript
 *.tsbuildinfo
-
-# Exclude embedded git repositories
-tree_ai_agent/ 

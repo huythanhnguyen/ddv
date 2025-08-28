@@ -6,6 +6,24 @@ export interface ParsedMessage {
   productData?: ProductDisplayMessage;
 }
 
+// Helper function to clean JSON string before parsing
+function cleanJsonString(jsonString: string): string {
+  // Replace Python None with JSON null
+  let cleaned = jsonString.replace(/: None/g, ': null');
+  cleaned = cleaned.replace(/: None,/g, ': null,');
+  cleaned = cleaned.replace(/: None}/g, ': null}');
+  cleaned = cleaned.replace(/: None]/g, ': null]');
+  
+  // Replace Python True/False with JSON true/false
+  cleaned = cleaned.replace(/: True/g, ': true');
+  cleaned = cleaned.replace(/: False/g, ': false');
+  
+  // Remove trailing commas before closing brackets/braces
+  cleaned = cleaned.replace(/,(\s*[}\]])/g, '$1');
+  
+  return cleaned;
+}
+
 export function parseMessage(content: string): ParsedMessage {
   // Debug logging only in development
   if (process.env.NODE_ENV === 'development') {
@@ -145,10 +163,10 @@ export function parseMessage(content: string): ParsedMessage {
   // Try to parse the detected JSON
   if (jsonText) {
     try {
-      // Handle escaped JSON strings (common in last_coordinator_response)
-      let cleanJsonText = jsonText;
+      // Clean the JSON string first
+      let cleanJsonText = cleanJsonString(jsonText);
       
-      // Remove escape characters if present
+      // Handle escaped JSON strings (common in last_coordinator_response)
       if (cleanJsonText.includes('\\n')) {
         cleanJsonText = cleanJsonText.replace(/\\n/g, '\n');
       }
@@ -157,6 +175,10 @@ export function parseMessage(content: string): ParsedMessage {
       }
       if (cleanJsonText.includes('\\\\')) {
         cleanJsonText = cleanJsonText.replace(/\\\\/g, '\\');
+      }
+      
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[MessageParser] Cleaned JSON text:', cleanJsonText.substring(0, 200) + '...');
       }
       
       const parsedData = JSON.parse(cleanJsonText);
@@ -259,6 +281,29 @@ export function parseMessage(content: string): ParsedMessage {
     } catch (error) {
       console.warn('[MessageParser] Failed to parse JSON:', error);
       console.warn('[MessageParser] JSON text was:', jsonText);
+      
+      // Try to fix common JSON issues and retry
+      try {
+        let fixedJson = jsonText;
+        
+        // Fix common Python JSON issues
+        fixedJson = fixedJson.replace(/: None/g, ': null');
+        fixedJson = fixedJson.replace(/: True/g, ': true');
+        fixedJson = fixedJson.replace(/: False/g, ': false');
+        fixedJson = fixedJson.replace(/,(\s*[}\]])/g, '$1'); // Remove trailing commas
+        
+        const parsedData = JSON.parse(fixedJson);
+        if (parsedData.type === 'product-display' && parsedData.products && Array.isArray(parsedData.products)) {
+          console.log('[MessageParser] Successfully parsed fixed JSON');
+          return {
+            type: 'product-display',
+            text: content.replace(jsonText, '').trim() || parsedData.message || '',
+            productData: parsedData
+          };
+        }
+      } catch (retryError) {
+        console.warn('[MessageParser] Failed to parse fixed JSON as well:', retryError);
+      }
     }
   }
   
@@ -362,6 +407,11 @@ export function testMessageParser() {
     {
       name: 'Simple product display JSON',
       content: '{"type": "product-display", "message": "Test", "products": []}',
+      expected: 'product-display'
+    },
+    {
+      name: 'Python None values in JSON',
+      content: '{"type": "product-display", "message": "Test", "products": [{"id": "test", "sku": None}]}',
       expected: 'product-display'
     },
     {

@@ -1,19 +1,17 @@
-"""Product Agent module for DDV Product Advisor"""
+"""
+Simplified Product Agent Module
+"""
 
-from .tools import (
-    product_search_tool,
-    price_analysis_tool,
-    store_location_tool,
-    product_compare_tool,
-    store_availability_tool,
-    integrated_recommendation_tool
+from .simplified_agent import simplified_product_agent
+from .simplified_tools import (
+    enhanced_product_search_tool,
+    simplified_product_compare_tool,
+    basic_price_analysis_tool
 )
 
 __all__ = [
-    "product_search_tool",
-    "price_analysis_tool", 
-    "store_location_tool",
-    "product_compare_tool",
-    "store_availability_tool",
-    "integrated_recommendation_tool"
-]
+    "simplified_product_agent",
+    "enhanced_product_search_tool",
+    "simplified_product_compare_tool",
+    "basic_price_analysis_tool"
+] 

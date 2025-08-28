@@ -1,5 +1,5 @@
 """Tools module for DDV Product Advisor"""
 
-from .product_store import DataStore, data_store
+from .enhanced_product_store import EnhancedProductStore, enhanced_data_store
 
-__all__ = ["DataStore", "data_store"]
+__all__ = ["EnhancedProductStore", "enhanced_data_store"]
