@@ -17,7 +17,9 @@ simplified_product_agent = Agent(
     description=SIMPLIFIED_PRODUCT_AGENT_DESCRIPTION,
     instruction=SIMPLIFIED_PRODUCT_AGENT_INSTR,
     tools=[
-        enhanced_product_search_tool
+        enhanced_product_search_tool,
+        simplified_product_compare_tool,
+        basic_price_analysis_tool
     ],
     output_key="simplified_product_advisor_response",
 )
