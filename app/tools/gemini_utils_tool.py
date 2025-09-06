@@ -40,6 +40,21 @@ class GeminiUtilsTool:
         """Check if Gemini client is available"""
         return self.client is not None
     
+    def _clean_json_response(self, response: str) -> str:
+        """Clean JSON response from markdown code blocks"""
+        if not response:
+            return response
+            
+        cleaned = response.strip()
+        if cleaned.startswith("```json"):
+            cleaned = cleaned[7:]  # Remove ```json
+        if cleaned.startswith("```"):
+            cleaned = cleaned[3:]   # Remove ```
+        if cleaned.endswith("```"):
+            cleaned = cleaned[:-3]  # Remove ```
+        
+        return cleaned.strip()
+    
     def _call_gemini(self, prompt: str, system_instruction: str) -> Optional[str]:
         """Call Gemini API with given prompt and system instruction"""
         if not self.client:
@@ -104,12 +119,16 @@ class GeminiUtilsTool:
         
         Quy tắc định nghĩa:
         - "giá rẻ" = dưới 5 triệu VND
-        - "tầm trung" = 5-15 triệu VND  
+        - "tầm trung" = 5-15 triệu VND
         - "cao cấp" = trên 15 triệu VND
         - "dưới X triệu" = dưới X triệu VND
         - "từ X đến Y triệu" = X-Y triệu VND
-        - tầm giá 20 triệu = 0 triệu đến 30 triệu
-        Trả về JSON format: {"min": số_nguyên_hoặc_null, "max": số_nguyên_hoặc_null}
+        - "tầm giá 20 triệu" = 20 triệu đến 30 triệu
+        - "khoảng 20 triệu" = 15 triệu đến 25 triệu
+        
+        CHỈ trả về JSON thuần túy, KHÔNG có markdown code blocks:
+        {"min": số_nguyên_hoặc_null, "max": số_nguyên_hoặc_null}
+        
         Ví dụ: {"min": null, "max": 5000000} cho "giá rẻ"
         """
         
@@ -118,7 +137,8 @@ class GeminiUtilsTool:
         
         if result:
             try:
-                budget_data = json.loads(result)
+                cleaned_result = self._clean_json_response(result)
+                budget_data = json.loads(cleaned_result)
                 min_budget = budget_data.get("min")
                 max_budget = budget_data.get("max")
                 return min_budget, max_budget
@@ -137,7 +157,8 @@ class GeminiUtilsTool:
         
         Các thương hiệu phổ biến: Apple, Samsung, Xiaomi, Oppo, Vivo, Realme, OnePlus, Huawei, Nokia, Motorola
         
-        Trả về JSON array: ["brand1", "brand2", ...]
+        CHỈ trả về JSON thuần túy, KHÔNG có markdown code blocks:
+        ["brand1", "brand2", ...]
         Nếu không tìm thấy thương hiệu nào, trả về []
         """
         
@@ -146,7 +167,8 @@ class GeminiUtilsTool:
         
         if result:
             try:
-                brands = json.loads(result)
+                cleaned_result = self._clean_json_response(result)
+                brands = json.loads(cleaned_result)
                 if isinstance(brands, list):
                     return brands
             except json.JSONDecodeError:
@@ -164,7 +186,8 @@ class GeminiUtilsTool:
         
         Các tính năng phổ biến: camera, pin, màn hình, chip, ram, bộ nhớ, hệ điều hành, wifi, bluetooth, gps
         
-        Trả về JSON array: ["feature1", "feature2", ...]
+        CHỈ trả về JSON thuần túy, KHÔNG có markdown code blocks:
+        ["feature1", "feature2", ...]
         Nếu không tìm thấy tính năng nào, trả về []
         """
         
@@ -173,7 +196,8 @@ class GeminiUtilsTool:
         
         if result:
             try:
-                features = json.loads(result)
+                cleaned_result = self._clean_json_response(result)
+                features = json.loads(cleaned_result)
                 if isinstance(features, list):
                     return features
             except json.JSONDecodeError:
@@ -210,7 +234,7 @@ class GeminiUtilsTool:
         system_instruction = """
         Phân tích ý định tìm kiếm từ yêu cầu của người dùng và trả về thông tin chi tiết.
         
-        Trả về JSON với các trường:
+        CHỈ trả về JSON thuần túy, KHÔNG có markdown code blocks:
         {
             "intent": "product_search|price_check|comparison|general_info",
             "product_type": "phone|accessory|service",
@@ -228,7 +252,8 @@ class GeminiUtilsTool:
         
         if result:
             try:
-                intent_data = json.loads(result)
+                cleaned_result = self._clean_json_response(result)
+                intent_data = json.loads(cleaned_result)
                 return intent_data
             except json.JSONDecodeError:
                 logger.warning(f"⚠️ Could not parse intent result: {result}")
