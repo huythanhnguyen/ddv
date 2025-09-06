@@ -107,9 +107,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <>
       <Card 
-        className="h-full transition-all duration-200 hover:shadow-lg border border-gray-200 bg-white rounded-lg overflow-hidden"
+        className="h-full transition-all duration-200 hover:shadow-lg border border-gray-200 bg-white rounded-lg overflow-hidden w-full"
       >
-        <CardContent className="p-4 h-full flex flex-col">
+        <CardContent className="p-2 sm:p-3 md:p-4 h-full flex flex-col">
           {/* Product Image */}
           <div className="relative mb-4 overflow-hidden rounded-lg bg-gray-50">
             <div className="aspect-square w-full">
@@ -158,7 +158,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           {/* Product Info */}
           <div className="flex-1 flex flex-col">
             {/* Product Name */}
-            <h3 className="font-medium text-sm text-gray-900 mb-3 line-clamp-2 leading-5 min-h-[2.5rem]">
+            <h3 className="font-medium text-xs sm:text-sm text-gray-900 mb-2 sm:mb-3 line-clamp-2 leading-4 sm:leading-5 min-h-[2rem] sm:min-h-[2.5rem]">
               {product.name}
             </h3>
 
@@ -170,7 +170,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             )}
 
             {/* Current Price */}
-            <div className="text-lg font-bold text-red-600 mb-2">
+            <div className="text-sm sm:text-lg font-bold text-red-600 mb-2">
               {formatPrice(product.price.current)}
             </div>
 

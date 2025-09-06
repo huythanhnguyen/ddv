@@ -23,6 +23,12 @@ export interface ChatSession {
   category?: string;
   isArchived?: boolean;
   tags?: string[];
+  tokenUsage?: {
+    totalTokens: number;
+    inputTokens: number;
+    outputTokens: number;
+    cost?: number;
+  };
 }
 
 // Session group types

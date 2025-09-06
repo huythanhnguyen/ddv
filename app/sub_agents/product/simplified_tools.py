@@ -30,17 +30,16 @@ def clean_product_data(product: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
-    """Enhanced product search tool using Whoosh search engine"""
+    """Enhanced product search tool using Gemini AI search engine"""
     try:
-        # Extract requirements from user input
+        # Use natural language query directly with Gemini AI
+        search_query = user_input.strip()
+        
+        # Extract requirements for additional filtering
         budget_min, budget_max = extract_budget_from_text(user_input)
         brands = extract_brands_from_text(user_input)
-        features = extract_features_from_text(user_input)
         
-        # Build search query from features
-        search_query = ' '.join(features) if features else ""
-        
-        # Build filters
+        # Build filters for post-processing
         filters = {}
         if brands:
             filters['brand'] = brands[0]  # Use first brand for now
@@ -48,7 +47,7 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
             filters['price_min'] = budget_min
             filters['price_max'] = budget_max
         
-        # Search products
+        # Search products using Gemini AI
         products = enhanced_data_store.search_products(
             query=search_query,
             filters=filters,
@@ -105,10 +104,22 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
             # Clean the UI product data as well
             ui_products.append(clean_product_data(ui_product))
 
+        # Add AI analysis to product display
+        ai_analysis = []
+        for p in products:
+            if 'ai_analysis' in p:
+                ai_analysis.append({
+                    'product_id': p.get('id', ''),
+                    'relevance_score': p['ai_analysis'].get('relevance_score', 0),
+                    'reasoning': p['ai_analysis'].get('reasoning', ''),
+                    'matched_criteria': p['ai_analysis'].get('matched_criteria', [])
+                })
+
         product_display = {
             "type": "product-display",
             "message": f"Tìm thấy {len(products)} sản phẩm phù hợp với yêu cầu của bạn",
             "products": ui_products,
+            "ai_analysis": ai_analysis
         }
 
         return {
@@ -120,8 +131,8 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
                 "budget_min": budget_min,
                 "budget_max": budget_max,
                 "brands": brands,
-                "features": features,
-                "search_query": search_query
+                "search_query": search_query,
+                "ai_enhanced": True
             }
         }
         

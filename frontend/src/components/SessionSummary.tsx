@@ -18,7 +18,8 @@ import {
   Trash2,
   Save,
   X,
-  Check
+  Check,
+  Zap
 } from 'lucide-react';
 
 interface SessionSummaryProps {
@@ -82,6 +83,7 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(session.name);
   const [showMenu, setShowMenu] = useState(false);
+  const [showTokenDetails, setShowTokenDetails] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -286,6 +288,21 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({
                 <MessageCircle className="w-3 h-3" />
                 <span>{session.messageCount}</span>
               </div>
+
+              {/* Token usage */}
+              {session.tokenUsage && (
+                <div 
+                  className="flex items-center gap-1 text-xs text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowTokenDetails(!showTokenDetails);
+                  }}
+                  title="Click để xem chi tiết token"
+                >
+                  <Zap className="w-3 h-3" />
+                  <span>{session.tokenUsage.totalTokens.toLocaleString()}</span>
+                </div>
+              )}
             </div>
 
             {/* Timestamp */}
@@ -313,6 +330,66 @@ export const SessionSummary: React.FC<SessionSummaryProps> = ({
                   +{session.tags.length - 3}
                 </Badge>
               )}
+            </div>
+          )}
+
+          {/* Token Details */}
+          {showTokenDetails && session.tokenUsage && (
+            <div className="mt-3 p-3 bg-muted/50 rounded-lg border border-border">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-card-foreground">Chi tiết Token</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowTokenDetails(false);
+                    }}
+                    className="h-6 w-6 p-0"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <span>Input Tokens:</span>
+                    </div>
+                    <div className="text-sm font-medium text-blue-600">
+                      {session.tokenUsage.inputTokens.toLocaleString()}
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <span>Output Tokens:</span>
+                    </div>
+                    <div className="text-sm font-medium text-green-600">
+                      {session.tokenUsage.outputTokens.toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pt-2 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Tổng cộng:</span>
+                    <span className="text-sm font-semibold text-primary">
+                      {session.tokenUsage.totalTokens.toLocaleString()} tokens
+                    </span>
+                  </div>
+                  
+                  {session.tokenUsage.cost && (
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-xs text-muted-foreground">Chi phí:</span>
+                      <span className="text-sm font-medium text-orange-600">
+                        ${session.tokenUsage.cost.toFixed(4)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>

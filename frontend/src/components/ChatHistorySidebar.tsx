@@ -12,7 +12,8 @@ import {
   saveSessionsToStorage, 
   loadSessionsFromStorage,
   generateSmartSessionName,
-  extractChatTopics
+  extractChatTopics,
+  calculateTokenUsage
 } from "@/utils/sessionUtils";
 
 interface HumanMessage {
@@ -121,9 +122,12 @@ export default function ChatHistorySidebar({
       setSessions(prev => {
         const existingIndex = prev.findIndex(s => s.id === currentSession.id);
         if (existingIndex >= 0) {
-          // Update existing session
+          // Update existing session with new token usage
           const updated = [...prev];
-          updated[existingIndex] = currentSession;
+          updated[existingIndex] = {
+            ...currentSession,
+            tokenUsage: calculateTokenUsage(currentMessages)
+          };
           return updated;
         } else {
           // Add new session

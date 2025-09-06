@@ -354,6 +354,35 @@ export const loadSessionsFromStorage = (): ChatSession[] => {
   }
 };
 
+// Calculate token usage for messages
+export const calculateTokenUsage = (messages: MessageWithAgent[]): { totalTokens: number; inputTokens: number; outputTokens: number; cost?: number } => {
+  let inputTokens = 0;
+  let outputTokens = 0;
+  
+  messages.forEach(message => {
+    // Simple token estimation: ~4 characters per token for Vietnamese text
+    const estimatedTokens = Math.ceil(message.content.length / 4);
+    
+    if (message.type === 'human') {
+      inputTokens += estimatedTokens;
+    } else {
+      outputTokens += estimatedTokens;
+    }
+  });
+  
+  const totalTokens = inputTokens + outputTokens;
+  
+  // Estimate cost (Gemini pricing: ~$0.0005 per 1K tokens)
+  const cost = totalTokens * 0.0005 / 1000;
+  
+  return {
+    totalTokens,
+    inputTokens,
+    outputTokens,
+    cost: cost > 0 ? cost : undefined
+  };
+};
+
 // Create session from current messages
 export const createSessionFromMessages = (
   messages: MessageWithAgent[],
@@ -371,6 +400,7 @@ export const createSessionFromMessages = (
     messageCount: messages.length,
     category: categorizeSession(messages),
     isArchived: false,
-    tags: extractKeywords(messages).slice(0, 5)
+    tags: extractKeywords(messages).slice(0, 5),
+    tokenUsage: calculateTokenUsage(messages)
   };
 }; 
