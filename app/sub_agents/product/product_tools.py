@@ -12,10 +12,8 @@ import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from app.tools.tools_manager import tools_manager
+from app.tools.gemini_utils_tool import gemini_utils
 from app.shared_libraries.utils import (
-    extract_budget_from_text, 
-    extract_brands_from_text, 
-    extract_features_from_text,
     format_price_vnd, 
     create_product_summary
 )
@@ -64,11 +62,29 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
         if not tools_manager.is_initialized:
             raise ProductToolsError("Tools manager not initialized")
         
-        # Extract requirements from natural language
+        # Extract requirements from natural language using Gemini AI
         search_query = user_input.strip()
-        budget_min, budget_max = extract_budget_from_text(user_input)
-        brands = extract_brands_from_text(user_input)
-        features = extract_features_from_text(user_input)
+        
+        # Use Gemini AI for flexible extraction
+        budget_min, budget_max = gemini_utils.extract_budget_from_text(user_input)
+        brands = gemini_utils.extract_brands_from_text(user_input)
+        features = gemini_utils.extract_features_from_text(user_input)
+        
+        # Fallback to traditional methods if Gemini fails
+        if budget_min is None and budget_max is None:
+            logger.info("🔄 Gemini budget extraction failed, using fallback")
+            from app.shared_libraries.utils import extract_budget_from_text as fallback_extract_budget
+            budget_min, budget_max = fallback_extract_budget(user_input)
+        
+        if not brands:
+            logger.info("🔄 Gemini brand extraction failed, using fallback")
+            from app.shared_libraries.utils import extract_brands_from_text as fallback_extract_brands
+            brands = fallback_extract_brands(user_input)
+        
+        if not features:
+            logger.info("🔄 Gemini feature extraction failed, using fallback")
+            from app.shared_libraries.utils import extract_features_from_text as fallback_extract_features
+            features = fallback_extract_features(user_input)
         
         logger.info(f"📋 Extracted requirements - Budget: {budget_min}-{budget_max}, Brands: {brands}, Features: {features}")
         logger.info(f"🔍 Original query: '{user_input}'")
@@ -83,6 +99,15 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
             filters['price_max'] = budget_max
         
         logger.info(f"🔍 Built filters: {filters}")
+        
+        # Analyze search intent using Gemini AI for better search optimization
+        search_intent = gemini_utils.analyze_search_intent(user_input)
+        logger.info(f"🧠 Search intent analysis: {search_intent}")
+        
+        # Optimize search query based on intent
+        if search_intent.get('search_query'):
+            search_query = search_intent['search_query']
+            logger.info(f"🔍 Optimized search query: '{search_query}'")
         
         # Search products using Meilisearch
         products = tools_manager.search_products(
@@ -169,11 +194,24 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
         
         logger.info(f"✅ Successfully processed {len(ui_products)} products for display")
         
+        # Generate intelligent recommendation using Gemini AI
+        recommendation_text = ""
+        if ui_products:
+            user_requirements = {
+                "budget_range": {"min": budget_min, "max": budget_max},
+                "brands": brands,
+                "features": features,
+                "intent": search_intent.get('intent', 'product_search')
+            }
+            recommendation_text = gemini_utils.generate_product_recommendation(user_requirements, ui_products[:3])
+            logger.info(f"💡 Generated recommendation: {recommendation_text[:100]}...")
+        
         return {
             "success": True,
             "products": products,  # Raw product data
             "total_found": len(ui_products),
             "product_display": product_display,
+            "recommendation": recommendation_text,
             "search_metadata": search_metadata,
             "criteria": {
                 "budget_min": budget_min,
@@ -181,7 +219,8 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
                 "brands": brands,
                 "features": features,
                 "search_query": search_query,
-                "ai_enhanced": True
+                "ai_enhanced": True,
+                "search_intent": search_intent
             }
         }
         
