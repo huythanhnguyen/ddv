@@ -71,6 +71,8 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
         features = extract_features_from_text(user_input)
         
         logger.info(f"📋 Extracted requirements - Budget: {budget_min}-{budget_max}, Brands: {brands}, Features: {features}")
+        logger.info(f"🔍 Original query: '{user_input}'")
+        logger.info(f"🔍 Search query: '{search_query}'")
         
         # Build filters for search
         filters = {}
@@ -79,6 +81,8 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
         if budget_min is not None or budget_max is not None:
             filters['price_min'] = budget_min
             filters['price_max'] = budget_max
+        
+        logger.info(f"🔍 Built filters: {filters}")
         
         # Search products using Meilisearch
         products = tools_manager.search_products(

@@ -80,27 +80,54 @@ def extract_budget_from_text(text: str) -> Tuple[Optional[int], Optional[int]]:
     if not text:
         return None, None
     
-    # Budget patterns
+    # Budget patterns - improved to handle more cases
     budget_patterns = [
+        # "dưới X triệu" patterns
         r'dưới\s+(\d+)\s*(triệu|m|M)',
         r'(\d+)\s*(triệu|m|M)\s*trở\s*xuống',
+        r'(\d+)\s*(triệu|m|M)\s*trở\s*lên',
+        
+        # Range patterns
         r'từ\s+(\d+)\s*đến\s+(\d+)\s*(triệu|m|M)',
         r'(\d+)\s*-\s*(\d+)\s*(triệu|m|M)',
         r'(\d+)\s*đến\s+(\d+)\s*(triệu|m|M)',
+        
+        # "giá rẻ" patterns - map to specific ranges
+        r'giá\s+rẻ',
+        r'điện\s+thoại\s+giá\s+rẻ',
+        
+        # "tầm trung" patterns
+        r'tầm\s+trung',
+        r'điện\s+thoại\s+tầm\s+trung',
+        
+        # "cao cấp" patterns
+        r'cao\s+cấp',
+        r'điện\s+thoại\s+cao\s+cấp',
     ]
     
-    for pattern in budget_patterns:
-        match = re.search(pattern, text, re.IGNORECASE)
+    text_lower = text.lower()
+    
+    # Check for specific budget ranges first
+    for pattern in budget_patterns[:6]:  # First 6 patterns are specific numbers
+        match = re.search(pattern, text_lower)
         if match:
-            if len(match.groups()) == 1:
-                # Single budget (e.g., "dưới 20 triệu")
+            if len(match.groups()) == 2:  # Single budget (e.g., "dưới 20 triệu")
                 max_budget = int(match.group(1)) * 1000000
                 return None, max_budget
-            elif len(match.groups()) == 3:
-                # Range budget (e.g., "từ 10 đến 20 triệu")
+            elif len(match.groups()) == 3:  # Range budget (e.g., "từ 10 đến 20 triệu")
                 min_budget = int(match.group(1)) * 1000000
                 max_budget = int(match.group(2)) * 1000000
                 return min_budget, max_budget
+    
+    # Check for predefined budget categories
+    if any(keyword in text_lower for keyword in ['giá rẻ', 'điện thoại giá rẻ']):
+        return None, 5000000  # Dưới 5 triệu VND
+    
+    if any(keyword in text_lower for keyword in ['tầm trung', 'điện thoại tầm trung']):
+        return 5000000, 15000000  # 5-15 triệu VND
+    
+    if any(keyword in text_lower for keyword in ['cao cấp', 'điện thoại cao cấp']):
+        return 15000000, None  # Trên 15 triệu VND
     
     return None, None
 

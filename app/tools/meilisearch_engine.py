@@ -249,9 +249,21 @@ class MeilisearchEngine:
                     'created_at': datetime.now().isoformat()
                 }
                 
-                # Add price information
-                price = product.get('price', {})
-                doc['price'] = price
+                # Add price information - normalize to consistent structure
+                price_vnd = product.get('price_vnd', 0)
+                price_listed_vnd = product.get('price_listed_vnd', price_vnd)
+                
+                doc['price'] = {
+                    'current': price_vnd,
+                    'original': price_listed_vnd,
+                    'currency': 'VND',
+                    'discount_percentage': 0
+                }
+                
+                # Calculate discount if applicable
+                if price_listed_vnd > price_vnd:
+                    discount = ((price_listed_vnd - price_vnd) / price_listed_vnd) * 100
+                    doc['price']['discount_percentage'] = round(discount, 1)
                 
                 # Add specs (flatten for better search)
                 specs = product.get('specs', {})
@@ -345,15 +357,18 @@ class MeilisearchEngine:
                 
                 if filters.get('price_min') is not None:
                     filter_conditions.append(f"price.current >= {filters['price_min']}")
+                    logger.info(f"🔍 Added price_min filter: >= {filters['price_min']}")
                 
                 if filters.get('price_max') is not None:
                     filter_conditions.append(f"price.current <= {filters['price_max']}")
+                    logger.info(f"🔍 Added price_max filter: <= {filters['price_max']}")
                 
                 if filters.get('min_discount'):
                     filter_conditions.append(f"price.discount_percentage >= {filters['min_discount']}")
                 
                 if filter_conditions:
                     search_params['filter'] = ' AND '.join(filter_conditions)
+                    logger.info(f"🔍 Applied filters: {search_params['filter']}")
             
             # Add sorting if provided
             if sort:
