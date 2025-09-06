@@ -25,18 +25,25 @@ class GeminiUtilsTool:
         try:
             api_key = os.environ.get("GEMINI_API_KEY")
             if not api_key:
-                logger.error("❌ GEMINI_API_KEY not found in environment variables")
+                logger.warning("⚠️ GEMINI_API_KEY not found in environment variables - Gemini features will be disabled")
+                logger.info("💡 To enable Gemini features, set GEMINI_API_KEY in your environment or .env file")
+                self.client = None
                 return
             
             self.client = genai.Client(api_key=api_key)
             logger.info("✅ Gemini Utils Tool initialized successfully")
         except Exception as e:
             logger.error(f"❌ Failed to initialize Gemini client: {e}")
+            self.client = None
+    
+    def is_available(self) -> bool:
+        """Check if Gemini client is available"""
+        return self.client is not None
     
     def _call_gemini(self, prompt: str, system_instruction: str) -> Optional[str]:
         """Call Gemini API with given prompt and system instruction"""
         if not self.client:
-            logger.error("❌ Gemini client not initialized")
+            logger.debug("🔧 Gemini client not available - skipping AI processing")
             return None
         
         try:
@@ -89,7 +96,7 @@ class GeminiUtilsTool:
     
     def extract_budget_from_text(self, text: str) -> Tuple[Optional[int], Optional[int]]:
         """Extract budget range from text using Gemini AI"""
-        if not text:
+        if not text or not self.is_available():
             return None, None
         
         system_instruction = """
@@ -101,7 +108,7 @@ class GeminiUtilsTool:
         - "cao cấp" = trên 15 triệu VND
         - "dưới X triệu" = dưới X triệu VND
         - "từ X đến Y triệu" = X-Y triệu VND
-        
+        - tầm giá 20 triệu = 0 triệu đến 30 triệu
         Trả về JSON format: {"min": số_nguyên_hoặc_null, "max": số_nguyên_hoặc_null}
         Ví dụ: {"min": null, "max": 5000000} cho "giá rẻ"
         """
@@ -122,7 +129,7 @@ class GeminiUtilsTool:
     
     def extract_brands_from_text(self, text: str) -> List[str]:
         """Extract brand preferences from text using Gemini AI"""
-        if not text:
+        if not text or not self.is_available():
             return []
         
         system_instruction = """
@@ -149,7 +156,7 @@ class GeminiUtilsTool:
     
     def extract_features_from_text(self, text: str) -> List[str]:
         """Extract feature requirements from text using Gemini AI"""
-        if not text:
+        if not text or not self.is_available():
             return []
         
         system_instruction = """
@@ -197,7 +204,7 @@ class GeminiUtilsTool:
     
     def analyze_search_intent(self, text: str) -> Dict[str, Any]:
         """Analyze search intent from user input using Gemini AI"""
-        if not text:
+        if not text or not self.is_available():
             return {}
         
         system_instruction = """
@@ -230,7 +237,7 @@ class GeminiUtilsTool:
     
     def generate_product_recommendation(self, user_requirements: Dict[str, Any], available_products: List[Dict[str, Any]]) -> str:
         """Generate product recommendation using Gemini AI"""
-        if not user_requirements or not available_products:
+        if not user_requirements or not available_products or not self.is_available():
             return "Không có thông tin đủ để đưa ra gợi ý."
         
         system_instruction = """
