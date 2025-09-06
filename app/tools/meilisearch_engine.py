@@ -14,6 +14,7 @@ import meilisearch
 from meilisearch.errors import MeilisearchError
 
 from app.config import meilisearch_config
+from .gemini_utils_tool import gemini_utils
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -315,7 +316,7 @@ class MeilisearchEngine:
                        limit: int = 20,
                        sort: Optional[List[str]] = None) -> List[Dict[str, Any]]:
         """
-        Search products using Meilisearch
+        Search products using Meilisearch with AI-powered query enhancement
         
         Args:
             query: Search query (Vietnamese/English)
@@ -336,6 +337,30 @@ class MeilisearchEngine:
         try:
             start_time = time.time()
             
+            # Use Gemini AI to enhance search query
+            enhanced_query = query
+            enhanced_filters = filters or {}
+            
+            # Analyze search intent and optimize query
+            search_intent = gemini_utils.analyze_search_intent(query)
+            if search_intent.get('search_query'):
+                enhanced_query = search_intent['search_query']
+                logger.info(f"🧠 AI enhanced query: '{query}' → '{enhanced_query}'")
+            
+            # Extract additional filters from natural language if not already provided
+            if not enhanced_filters.get('price_min') and not enhanced_filters.get('price_max'):
+                budget_min, budget_max = gemini_utils.extract_budget_from_text(query)
+                if budget_min is not None or budget_max is not None:
+                    enhanced_filters['price_min'] = budget_min
+                    enhanced_filters['price_max'] = budget_max
+                    logger.info(f"💰 AI extracted budget filters: {budget_min}-{budget_max}")
+            
+            if not enhanced_filters.get('brand'):
+                brands = gemini_utils.extract_brands_from_text(query)
+                if brands:
+                    enhanced_filters['brand'] = brands[0]
+                    logger.info(f"🏷️ AI extracted brand filter: {brands[0]}")
+            
             # Prepare search parameters
             search_params = {
                 'limit': limit,
@@ -345,26 +370,26 @@ class MeilisearchEngine:
                 'highlightPostTag': '</mark>'
             }
             
-            # Add filters if provided
-            if filters:
+            # Add filters if provided (use enhanced_filters)
+            if enhanced_filters:
                 filter_conditions = []
                 
-                if filters.get('brand'):
-                    filter_conditions.append(f"brand = '{filters['brand']}'")
+                if enhanced_filters.get('brand'):
+                    filter_conditions.append(f"brand = '{enhanced_filters['brand']}'")
                 
-                if filters.get('category'):
-                    filter_conditions.append(f"category = '{filters['category']}'")
+                if enhanced_filters.get('category'):
+                    filter_conditions.append(f"category = '{enhanced_filters['category']}'")
                 
-                if filters.get('price_min') is not None:
-                    filter_conditions.append(f"price.current >= {filters['price_min']}")
-                    logger.info(f"🔍 Added price_min filter: >= {filters['price_min']}")
+                if enhanced_filters.get('price_min') is not None:
+                    filter_conditions.append(f"price.current >= {enhanced_filters['price_min']}")
+                    logger.info(f"🔍 Added price_min filter: >= {enhanced_filters['price_min']}")
                 
-                if filters.get('price_max') is not None:
-                    filter_conditions.append(f"price.current <= {filters['price_max']}")
-                    logger.info(f"🔍 Added price_max filter: <= {filters['price_max']}")
+                if enhanced_filters.get('price_max') is not None:
+                    filter_conditions.append(f"price.current <= {enhanced_filters['price_max']}")
+                    logger.info(f"🔍 Added price_max filter: <= {enhanced_filters['price_max']}")
                 
-                if filters.get('min_discount'):
-                    filter_conditions.append(f"price.discount_percentage >= {filters['min_discount']}")
+                if enhanced_filters.get('min_discount'):
+                    filter_conditions.append(f"price.discount_percentage >= {enhanced_filters['min_discount']}")
                 
                 if filter_conditions:
                     search_params['filter'] = ' AND '.join(filter_conditions)
@@ -374,8 +399,8 @@ class MeilisearchEngine:
             if sort:
                 search_params['sort'] = sort
             
-            # Perform search
-            results = self.index.search(query, search_params)
+            # Perform search with enhanced query
+            results = self.index.search(enhanced_query, search_params)
             
             # Process results
             products = []
@@ -392,7 +417,7 @@ class MeilisearchEngine:
                 products.append(product)
             
             search_time = time.time() - start_time
-            logger.info(f"🔍 Meilisearch completed in {search_time:.3f}s for query: {query}")
+            logger.info(f"🔍 AI-enhanced Meilisearch completed in {search_time:.3f}s for query: '{query}' → '{enhanced_query}'")
             logger.info(f"📊 Found {len(products)} results")
             
             return products
@@ -529,4 +554,63 @@ class MeilisearchEngine:
             logger.info(f"🗑️ Index cleared. Task ID: {task.task_uid}")
         except Exception as e:
             logger.error(f"❌ Error clearing index: {e}")
+    
+    def analyze_product_with_ai(self, product_id: str) -> Dict[str, Any]:
+        """Analyze a specific product using AI to provide insights"""
+        try:
+            # Get product data
+            product = self.get_product_by_id(product_id)
+            if not product:
+                return {
+                    "success": False,
+                    "message": "Không tìm thấy sản phẩm",
+                    "analysis": {}
+                }
+            
+            # Create product summary for AI analysis
+            product_summary = {
+                "name": product.get('name', ''),
+                "brand": product.get('brand', ''),
+                "price": product.get('price', {}),
+                "specs": product.get('specs', {}),
+                "promotions": product.get('promotions', {})
+            }
+            
+            # Use Gemini AI to analyze the product
+            analysis_prompt = f"""
+            Phân tích sản phẩm điện thoại sau và đưa ra đánh giá:
+            
+            Tên: {product_summary['name']}
+            Thương hiệu: {product_summary['brand']}
+            Giá: {product_summary['price']}
+            Thông số: {product_summary['specs']}
+            Khuyến mãi: {product_summary['promotions']}
+            
+            Đưa ra đánh giá về:
+            1. Điểm mạnh của sản phẩm
+            2. Điểm yếu cần lưu ý
+            3. Đối tượng phù hợp
+            4. So sánh với thị trường
+            5. Khuyến nghị mua hàng
+            """
+            
+            analysis_result = gemini_utils._call_gemini(
+                analysis_prompt,
+                "Bạn là chuyên gia đánh giá điện thoại. Hãy phân tích khách quan và đưa ra lời khuyên hữu ích."
+            )
+            
+            return {
+                "success": True,
+                "product": product_summary,
+                "analysis": analysis_result or "Không thể phân tích sản phẩm tại thời điểm này",
+                "ai_enhanced": True
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Error analyzing product {product_id}: {e}")
+            return {
+                "success": False,
+                "message": f"Lỗi khi phân tích sản phẩm: {str(e)}",
+                "analysis": {}
+            }
 

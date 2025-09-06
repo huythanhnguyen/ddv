@@ -10,6 +10,7 @@ from datetime import datetime
 
 # Meilisearch Engine import
 from .meilisearch_engine import MeilisearchEngine
+from .gemini_utils_tool import gemini_utils
 
 # Get the project root directory
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -58,15 +59,40 @@ class EnhancedProductStore:
                        filters: Optional[Dict[str, Any]] = None,
                        limit: int = 20,
                        sort: Optional[List[str]] = None) -> List[Dict[str, Any]]:
-        """Enhanced search using Meilisearch"""
+        """Enhanced search using Meilisearch with AI-powered query optimization"""
         if not self.search_engine:
             return []
         
         try:
-            # Use Meilisearch engine with built-in filtering
+            # Use Gemini AI to optimize search query and extract filters
+            optimized_query = query
+            enhanced_filters = filters or {}
+            
+            if query:
+                # Analyze search intent and optimize query
+                search_intent = gemini_utils.analyze_search_intent(query)
+                
+                # Use optimized query if available
+                if search_intent.get('search_query'):
+                    optimized_query = search_intent['search_query']
+                    print(f"🔍 AI optimized query: '{query}' → '{optimized_query}'")
+                
+                # Extract additional filters from natural language
+                budget_min, budget_max = gemini_utils.extract_budget_from_text(query)
+                if budget_min is not None or budget_max is not None:
+                    enhanced_filters['price_min'] = budget_min
+                    enhanced_filters['price_max'] = budget_max
+                    print(f"💰 AI extracted budget: {budget_min}-{budget_max}")
+                
+                brands = gemini_utils.extract_brands_from_text(query)
+                if brands:
+                    enhanced_filters['brand'] = brands[0]  # Use first brand for filter
+                    print(f"🏷️ AI extracted brand: {brands}")
+            
+            # Use Meilisearch engine with AI-enhanced parameters
             results = self.search_engine.search_products(
-                query=query, 
-                filters=filters, 
+                query=optimized_query, 
+                filters=enhanced_filters, 
                 limit=limit,
                 sort=sort
             )
@@ -74,7 +100,7 @@ class EnhancedProductStore:
             return results
             
         except Exception as e:
-            print(f"❌ Error in Meilisearch: {e}")
+            print(f"❌ Error in enhanced search: {e}")
             return []
     
     
@@ -136,6 +162,49 @@ class EnhancedProductStore:
         except Exception as e:
             print(f"❌ Error getting search stats: {e}")
             return {}
+    
+    def get_ai_recommendations(self, user_query: str, limit: int = 5) -> Dict[str, Any]:
+        """Get AI-powered product recommendations based on user query"""
+        try:
+            # Search for products first
+            products = self.search_products(query=user_query, limit=limit * 2)
+            
+            if not products:
+                return {
+                    "success": False,
+                    "message": "Không tìm thấy sản phẩm phù hợp",
+                    "recommendations": []
+                }
+            
+            # Analyze user requirements using Gemini AI
+            user_requirements = {
+                "query": user_query,
+                "budget_range": gemini_utils.extract_budget_from_text(user_query),
+                "brands": gemini_utils.extract_brands_from_text(user_query),
+                "features": gemini_utils.extract_features_from_text(user_query),
+                "intent": gemini_utils.analyze_search_intent(user_query)
+            }
+            
+            # Generate AI recommendations
+            recommendation_text = gemini_utils.generate_product_recommendation(
+                user_requirements, products[:limit]
+            )
+            
+            return {
+                "success": True,
+                "message": recommendation_text,
+                "recommendations": products[:limit],
+                "user_requirements": user_requirements,
+                "total_found": len(products)
+            }
+            
+        except Exception as e:
+            print(f"❌ Error generating AI recommendations: {e}")
+            return {
+                "success": False,
+                "message": f"Lỗi khi tạo gợi ý: {str(e)}",
+                "recommendations": []
+            }
 
 
 # Global instance
