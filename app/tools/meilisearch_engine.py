@@ -9,6 +9,7 @@ import time
 from typing import List, Dict, Any, Optional, Tuple
 from pathlib import Path
 from datetime import datetime
+import re
 
 import meilisearch
 from meilisearch.errors import MeilisearchError
@@ -32,7 +33,8 @@ class MeilisearchEngine:
         self.products = []
         self.client = None
         self.index = None
-        self.index_name = "ddv_products"
+        # Use the canonical index name created in runtime scripts
+        self.index_name = "products"
         
         # Initialize Meilisearch client
         self._setup_meilisearch_client()
@@ -42,7 +44,51 @@ class MeilisearchEngine:
         
         # Setup index and add documents
         self._setup_index()
-    
+
+    # ------------------------- Heuristics -------------------------
+    def _heuristic_brand_from_query(self, text: str) -> Optional[str]:
+        """Simple deterministic brand detection to complement AI extraction.
+        If the user explicitly mentions a brand family (e.g., 'iphone', 'galaxy'),
+        enforce that as a brand filter to avoid cross-brand results.
+        """
+        if not text:
+            return None
+        t = text.lower()
+        # map tokens → canonical brand
+        brand_map = {
+            r"\biphone\b": "Apple",
+            r"\bipad\b": "Apple",
+            r"\bmac\b": "Apple",
+            r"\bgalaxy\b": "Samsung",
+            r"\bsamsung\b": "Samsung",
+            r"\bxiaomi\b|\bmi\b": "Xiaomi",
+            r"\boppo\b": "OPPO",
+            r"\bvivo\b": "Vivo",
+            r"\brealme\b": "Realme",
+        }
+        for pattern, brand in brand_map.items():
+            if re.search(pattern, t):
+                return brand
+        return None
+
+    def _normalize_model_phrase(self, text: str) -> Optional[str]:
+        """Extract a concise model phrase to boost relevance (e.g., 'iphone 16 pro')."""
+        if not text:
+            return None
+        t = text.lower().strip()
+        # common phones: iphone <number> [pro|max|plus]
+        m = re.search(r"iphone\s+([0-9]{1,2})(?:\s+(pro\s*max|pro|plus))?", t)
+        if m:
+            parts = ["iPhone", m.group(1)]
+            if m.group(2):
+                parts.append(m.group(2).title().replace(" ", " "))
+            return " ".join(parts)
+        return None
+
+    def _tokens_from_phrase(self, phrase: str) -> List[str]:
+        return [w for w in re.split(r"[^a-z0-9]+", phrase.lower()) if w]
+
+    # ------------------------- Client/Index ------------------------
     def _setup_meilisearch_client(self):
         """Setup Meilisearch client"""
         try:
@@ -83,8 +129,10 @@ class MeilisearchEngine:
             # Get or create index
             try:
                 self.index = self.client.index(self.index_name)
-                logger.info(f"✅ Using existing index: {self.index_name}")
-            except MeilisearchError:
+                # Touch the index to verify it exists; if not, create it
+                _ = self.index.get_stats()
+                logger.info(f"✅ Using index: {self.index_name}")
+            except Exception:
                 # Create new index
                 self.index = self.client.create_index(self.index_name, {'primaryKey': 'id'})
                 logger.info(f"✅ Created new index: {self.index_name}")
@@ -102,79 +150,29 @@ class MeilisearchEngine:
     def _configure_index_settings(self):
         """Configure Meilisearch index settings for optimal product search"""
         try:
-            # Configure searchable attributes (what can be searched)
-            # Include ALL fields for comprehensive search
-            searchable_attributes = [
-                'name',
-                'brand', 
-                'category',
-                'availability',
-                'url',
-                # All specs fields
-                'specs.screen_size',
-                'specs.screen_tech',
-                'specs.resolution',
-                'specs.camera_main',
-                'specs.camera_front',
-                'specs.camera_features',
-                'specs.os',
-                'specs.chipset',
-                'specs.cpu_cores',
-                'specs.gpu',
-                'specs.ram',
-                'specs.storage',
-                'specs.network',
-                'specs.sim',
-                'specs.bluetooth',
-                'specs.usb',
-                'specs.wifi',
-                'specs.gps',
-                'specs.battery',
-                'specs.weight',
-                'specs.dimensions',
-                'specs.colors',
-                'specs.materials',
-                'specs.water_resistance',
-                'specs.biometric',
-                'specs.sensors',
-                'specs.audio',
-                'specs.charging',
-                'specs.connectivity',
-                # All promotions fields
-                'promotions.free_gifts',
-                'promotions.vouchers',
-                'promotions.special_discounts',
-                'promotions.bundle_offers',
-                'promotions.description',
-                'promotions.terms',
-                # Price fields
-                'price.currency',
-                # Images (for future use)
-                'images',
-                # Combined searchable text (contains all flattened data)
-                '_searchable_text'
-            ]
+            # Configure searchable attributes to include ALL fields
+            searchable_attributes = ['*']
             
             # Configure filterable attributes (what can be filtered)
             filterable_attributes = [
                 'brand',
                 'category',
+                'availability',
                 'price.current',
                 'price.original',
                 'price.discount_percentage',
-                'specs.screen_size',
-                'specs.storage',
-                'specs.ram',
-                'availability'
+                'promotions_count',
             ]
             
             # Configure sortable attributes
             sortable_attributes = [
+                'last_updated',
                 'price.current',
                 'price.original',
                 'price.discount_percentage',
-                'name',
-                'brand'
+                'promotions_count',
+                'reviews.average_rating',
+                'reviews.rating_count',
             ]
             
             # Configure ranking rules (how results are ranked)
@@ -190,22 +188,15 @@ class MeilisearchEngine:
             # Configure synonyms for better Vietnamese search
             synonyms = {
                 'điện thoại': ['phone', 'smartphone', 'mobile'],
-                'iphone': ['apple'],
-                'samsung': ['galaxy'],
-                'xiaomi': ['mi'],
-                'oppo': ['oneplus'],
-                'vivo': ['iqoo'],
-                'realme': ['real me'],
-                'pin': ['battery'],
-                'camera': ['chụp ảnh', 'chụp hình'],
-                'màn hình': ['screen', 'display'],
+                'iphone': ['apple', 'ip'],
+                'samsung': ['galaxy', 'ss'],
+                'khuyến mãi': ['giảm giá', 'ưu đãi', 'promotion', 'deal', 'discount'],
+                'giam gia': ['khuyến mãi', 'promotion', 'discount'],
+                'uu dai': ['khuyến mãi', 'promotion'],
+                'màu': ['color', 'mau'],
                 'bộ nhớ': ['storage', 'memory'],
-                'ram': ['memory'],
-                'chip': ['processor', 'cpu'],
-                'hệ điều hành': ['os', 'operating system']
             }
             
-            # Apply settings
             settings = {
                 'searchableAttributes': searchable_attributes,
                 'filterableAttributes': filterable_attributes,
@@ -228,16 +219,26 @@ class MeilisearchEngine:
         except Exception as e:
             logger.error(f"❌ Error configuring index settings: {e}")
     
+    def _count_promotions(self, promotions: Dict[str, Any]) -> int:
+        """Count total number of promotions across promo categories"""
+        if not promotions:
+            return 0
+        total = 0
+        for key in ['free_gifts', 'vouchers', 'special_discounts', 'bundle_offers']:
+            val = promotions.get(key)
+            if isinstance(val, list):
+                total += len(val)
+        return total
+    
     def _index_products(self):
         """Index all products in Meilisearch"""
         if not self.index or not self.products:
             return
         
         try:
-            # Prepare documents for indexing
             documents = []
             for product in self.products:
-                # Flatten nested structures for better search
+                # Base doc
                 doc = {
                     'id': product.get('id', ''),
                     'name': product.get('name', ''),
@@ -250,65 +251,64 @@ class MeilisearchEngine:
                     'created_at': datetime.now().isoformat()
                 }
                 
-                # Add price information - normalize to consistent structure
-                price_vnd = product.get('price_vnd', 0)
-                price_listed_vnd = product.get('price_listed_vnd', price_vnd)
-                
+                # Price
+                price_obj = product.get('price', {})
+                price_vnd = price_obj.get('current', 0)
+                price_listed_vnd = price_obj.get('original', price_vnd)
+                if price_vnd == 0:
+                    price_vnd = product.get('price_vnd', 0)
+                if price_listed_vnd == 0:
+                    price_listed_vnd = product.get('price_listed_vnd', price_vnd)
+                discount_pct = price_obj.get('discount_percentage', 0)
+                if not discount_pct and price_listed_vnd and price_listed_vnd > price_vnd:
+                    discount_pct = round(((price_listed_vnd - price_vnd) / price_listed_vnd) * 100, 2)
                 doc['price'] = {
                     'current': price_vnd,
                     'original': price_listed_vnd,
-                    'currency': 'VND',
-                    'discount_percentage': 0
+                    'currency': price_obj.get('currency', 'VND'),
+                    'discount_percentage': discount_pct or 0
                 }
                 
-                # Calculate discount if applicable
-                if price_listed_vnd > price_vnd:
-                    discount = ((price_listed_vnd - price_vnd) / price_listed_vnd) * 100
-                    doc['price']['discount_percentage'] = round(discount, 1)
-                
-                # Add specs (flatten for better search)
+                # Specs and promotions
                 specs = product.get('specs', {})
-                doc['specs'] = specs
-                
-                # Add promotions (flatten for better search)
                 promotions = product.get('promotions', {})
+                doc['specs'] = specs
                 doc['promotions'] = promotions
+                doc['promotions_count'] = self._count_promotions(promotions)
                 
-                # Create searchable text fields by flattening arrays
-                searchable_text = []
-                
-                # Add name and brand
-                searchable_text.append(doc['name'])
-                searchable_text.append(doc['brand'])
-                searchable_text.append(doc['category'])
-                
-                # Add all specs values
-                for spec_key, spec_value in specs.items():
+                # Flatten to searchable text
+                searchable_text = [doc['name'], doc['brand'], doc['category']]
+                for spec_value in specs.values():
                     if isinstance(spec_value, str):
                         searchable_text.append(spec_value)
                     elif isinstance(spec_value, list):
                         searchable_text.extend([str(item) for item in spec_value])
                     else:
                         searchable_text.append(str(spec_value))
-                
-                # Add all promotions values
-                for promo_key, promo_value in promotions.items():
+                for promo_value in promotions.values():
                     if isinstance(promo_value, list):
                         searchable_text.extend([str(item) for item in promo_value])
                     elif isinstance(promo_value, str):
                         searchable_text.append(promo_value)
-                
-                # Add combined searchable text
-                doc['_searchable_text'] = ' '.join(searchable_text)
+                doc['_searchable_text'] = ' '.join([s for s in searchable_text if s])
                 
                 documents.append(doc)
             
-            # Add documents to index
             task = self.index.add_documents(documents)
             logger.info(f"✅ Indexed {len(documents)} products. Task ID: {task.task_uid}")
             
         except Exception as e:
             logger.error(f"❌ Error indexing products: {e}")
+    
+    def _detect_promotion_intent(self, text: str) -> bool:
+        if not text:
+            return False
+        t = text.lower()
+        keywords = [
+            'khuyến mãi', 'khuyen mai', 'giảm giá', 'giam gia', 'ưu đãi', 'uu dai',
+            'promotion', 'discount', 'deal'
+        ]
+        return any(k in t for k in keywords)
     
     def search_products(self, 
                        query: str, 
@@ -317,15 +317,6 @@ class MeilisearchEngine:
                        sort: Optional[List[str]] = None) -> List[Dict[str, Any]]:
         """
         Search products using Meilisearch with AI-powered query enhancement
-        
-        Args:
-            query: Search query (Vietnamese/English)
-            filters: Optional filters to apply
-            limit: Maximum number of results
-            sort: Optional sorting criteria
-            
-        Returns:
-            List of matching products
         """
         if not self.index:
             logger.warning("Meilisearch index not available, using fallback search")
@@ -337,17 +328,22 @@ class MeilisearchEngine:
         try:
             start_time = time.time()
             
-            # Use Gemini AI to enhance search query
             enhanced_query = query
             enhanced_filters = filters or {}
             
-            # Analyze search intent and optimize query
+            # AI intent enhancement
             search_intent = gemini_utils.analyze_search_intent(query)
             if search_intent.get('search_query'):
                 enhanced_query = search_intent['search_query']
                 logger.info(f"🧠 AI enhanced query: '{query}' → '{enhanced_query}'")
             
-            # Extract additional filters from natural language if not already provided
+            # Heuristic brand extraction (deterministic) to prevent cross-brand noise
+            detected_brand = self._heuristic_brand_from_query(query)
+            if detected_brand and not enhanced_filters.get('brand'):
+                enhanced_filters['brand'] = detected_brand
+                logger.info(f"🏷️ Heuristic brand filter: {detected_brand}")
+            
+            # Budget filters
             if not enhanced_filters.get('price_min') and not enhanced_filters.get('price_max'):
                 budget_min, budget_max = gemini_utils.extract_budget_from_text(query)
                 if budget_min is not None or budget_max is not None:
@@ -355,73 +351,83 @@ class MeilisearchEngine:
                     enhanced_filters['price_max'] = budget_max
                     logger.info(f"💰 AI extracted budget filters: {budget_min}-{budget_max}")
             
+            # AI brand extraction as a fallback if heuristic not found
             if not enhanced_filters.get('brand'):
                 brands = gemini_utils.extract_brands_from_text(query)
                 if brands:
                     enhanced_filters['brand'] = brands[0]
                     logger.info(f"🏷️ AI extracted brand filter: {brands[0]}")
             
-            # Prepare search parameters
-            search_params = {
+            # Build search params
+            search_params: Dict[str, Any] = {
                 'limit': limit,
                 'attributesToRetrieve': ['*'],
-                'attributesToHighlight': ['name', 'brand', 'category', '_searchable_text'],
+                'attributesToHighlight': ['name', 'brand', 'category', '_searchable_text', 'promotions'],
                 'highlightPreTag': '<mark>',
                 'highlightPostTag': '</mark>'
             }
             
-            # Add filters if provided (use enhanced_filters)
+            filter_conditions = []
             if enhanced_filters:
-                filter_conditions = []
-                
                 if enhanced_filters.get('brand'):
                     filter_conditions.append(f"brand = '{enhanced_filters['brand']}'")
-                
                 if enhanced_filters.get('category'):
                     filter_conditions.append(f"category = '{enhanced_filters['category']}'")
-                
                 if enhanced_filters.get('price_min') is not None:
                     filter_conditions.append(f"price.current >= {enhanced_filters['price_min']}")
-                    logger.info(f"🔍 Added price_min filter: >= {enhanced_filters['price_min']}")
-                
                 if enhanced_filters.get('price_max') is not None:
                     filter_conditions.append(f"price.current <= {enhanced_filters['price_max']}")
-                    logger.info(f"🔍 Added price_max filter: <= {enhanced_filters['price_max']}")
-                
-                if enhanced_filters.get('min_discount'):
+                if enhanced_filters.get('min_discount') is not None:
                     filter_conditions.append(f"price.discount_percentage >= {enhanced_filters['min_discount']}")
-                
-                if filter_conditions:
-                    search_params['filter'] = ' AND '.join(filter_conditions)
-                    logger.info(f"🔍 Applied filters: {search_params['filter']}")
             
-            # Add sorting if provided
+            # Promotion intent
+            promo_intent = self._detect_promotion_intent(query)
+            if promo_intent:
+                filter_conditions.append("promotions_count >= 1 OR price.discount_percentage > 0")
+                if not sort:
+                    sort = ["promotions_count:desc", "price.discount_percentage:desc"]
+            
+            if filter_conditions:
+                search_params['filter'] = ' AND '.join(filter_conditions)
+                logger.info(f"🔍 Applied filters: {search_params['filter']}")
+            
+            # Boost model phrase if present by appending to query
+            model_phrase = self._normalize_model_phrase(query)
+            if model_phrase and model_phrase.lower() not in enhanced_query.lower():
+                enhanced_query = f"{enhanced_query} {model_phrase}"
+                logger.info(f"🔎 Model phrase boost: '{model_phrase}'")
+            
             if sort:
                 search_params['sort'] = sort
             
-            # Perform search with enhanced query
             results = self.index.search(enhanced_query, search_params)
             
-            # Process results
             products = []
             for hit in results.get('hits', []):
                 product = hit.copy()
-                
-                # Add search metadata
                 product['search_metadata'] = {
                     'relevance_score': hit.get('_rankingScore', 0.0),
                     'formatted': hit.get('_formatted', {}),
                     'matched_terms': hit.get('_matchesInfo', {})
                 }
-                
                 products.append(product)
+
+            # If user asked a specific model, keep only exact-like matches on name
+            if model_phrase:
+                tokens = self._tokens_from_phrase(model_phrase)
+                narrowed = []
+                for p in products:
+                    name = (p.get('name') or '').lower()
+                    if all(tok in name for tok in tokens):
+                        narrowed.append(p)
+                if narrowed:
+                    products = narrowed
             
             search_time = time.time() - start_time
             logger.info(f"🔍 AI-enhanced Meilisearch completed in {search_time:.3f}s for query: '{query}' → '{enhanced_query}'")
             logger.info(f"📊 Found {len(products)} results")
             
             return products
-            
         except Exception as e:
             logger.error(f"❌ Meilisearch failed for query '{query}': {e}")
             logger.info("🔄 Falling back to simple text search")
@@ -437,28 +443,19 @@ class MeilisearchEngine:
         
         for product in self.products:
             score = 0
-            
-            # Check name
             name = product.get('name', '').lower()
             if query_lower in name:
                 score += 10
-            
-            # Check brand
             brand = product.get('brand', '').lower()
             if query_lower in brand:
                 score += 8
-            
-            # Check category
             category = product.get('category', '').lower()
             if query_lower in category:
                 score += 5
-            
-            # Check specs
             specs = product.get('specs', {})
             for spec_value in specs.values():
                 if isinstance(spec_value, str) and query_lower in spec_value.lower():
                     score += 3
-            
             if score > 0:
                 product_copy = product.copy()
                 product_copy['search_metadata'] = {
@@ -467,15 +464,12 @@ class MeilisearchEngine:
                     'matched_terms': {}
                 }
                 results.append(product_copy)
-        
-        # Sort by score and limit results
         results.sort(key=lambda x: x['search_metadata']['relevance_score'], reverse=True)
         return results[:limit]
     
     def get_product_by_id(self, product_id: str) -> Optional[Dict[str, Any]]:
         """Get product by ID using Meilisearch"""
         if not self.index:
-            # Fallback to direct lookup
             for product in self.products:
                 if product.get('id') == product_id:
                     return product
@@ -510,10 +504,7 @@ class MeilisearchEngine:
             return
         
         try:
-            # Clear existing documents
             self.index.delete_all_documents()
-            
-            # Reindex all products
             self._index_products()
             logger.info("✅ Products reindexed successfully")
             
@@ -558,7 +549,6 @@ class MeilisearchEngine:
     def analyze_product_with_ai(self, product_id: str) -> Dict[str, Any]:
         """Analyze a specific product using AI to provide insights"""
         try:
-            # Get product data
             product = self.get_product_by_id(product_id)
             if not product:
                 return {
@@ -567,7 +557,6 @@ class MeilisearchEngine:
                     "analysis": {}
                 }
             
-            # Create product summary for AI analysis
             product_summary = {
                 "name": product.get('name', ''),
                 "brand": product.get('brand', ''),
@@ -576,7 +565,6 @@ class MeilisearchEngine:
                 "promotions": product.get('promotions', {})
             }
             
-            # Use Gemini AI to analyze the product
             analysis_prompt = f"""
             Phân tích sản phẩm điện thoại sau và đưa ra đánh giá:
             
