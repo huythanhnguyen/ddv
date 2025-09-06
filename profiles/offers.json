@@ -1,0 +1,1411 @@
+[
+  {
+    "product_id": "samsung-galaxy-s25-ultra-5g",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-s25-ultra-256gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 25590000,
+          "original_price_vnd": 33380000,
+          "discount_percentage": 23,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 23% từ 33,380,000đ",
+      "payment_options": [
+        "Trả góp 0% qua Samsung Finance+",
+        "Thu cũ đổi mới: Trơ giá thêm đến 2.500.000đ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Từ 22/08 - 31/08",
+          "description": "Sale lớn tại 10 cửa hàng (chi tiết)",
+          "type": "store_sale"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Quạt mini Jisulife FA20X Plus ABS 4000mAh",
+          "condition": "Áp dụng trực tiếp tại 10 CH",
+          "type": "direct_store"
+        },
+        {
+          "item": "Củ sạc Samsung 25W",
+          "condition": "Tặng kèm sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher đến 200K khi mua Watch, Buds, Phụ kiện Samsung",
+          "type": "accessory_purchase"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm ngay 5% tối đa 600.000đ",
+          "target": "Học Sinh - Sinh Viên & Tài Xế Công Nghệ",
+          "type": "student_driver_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Galaxy Watch Ultra",
+          "discount": "Giảm thêm 4 triệu",
+          "type": "watch_bundle"
+        },
+        {
+          "product": "Galaxy Watch8 | Watch8 Classic",
+          "discount": "Giảm thêm 4 triệu",
+          "type": "watch_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Khách hàng doanh nghiệp / dự án nhận báo giá tốt nhất",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "iphone-16-pro-max",
+    "source_url": "https://didongviet.vn/dien-thoai/iphone-16-pro-max.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 4000000,
+          "original_price_vnd": 4000000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 4,000,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-s25-ultra",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-s25-ultra-256gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 25590000,
+          "original_price_vnd": 33380000,
+          "discount_percentage": 23,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 23% từ 33,380,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-z-fold7-5g",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-z-fold7-5g-256gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 41990000,
+          "original_price_vnd": 46990000,
+          "discount_percentage": 10,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 10% từ 46,990,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-z-flip7-5g",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-z-flip7-5g-256gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 24490000,
+          "original_price_vnd": 28990000,
+          "discount_percentage": 15,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 15% từ 28,990,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "apple-iphone-16-pro-max-cty-c7e692",
+    "source_url": "https://didongviet.vn/dien-thoai/apple-iphone-16-pro-max-512gb-cty-c7e692.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá từ meta",
+          "price_vnd": 27290000,
+          "original_price_vnd": 27290000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 27,290,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-s25-ultra-sm-s938b-ds-cty-da-kich-hoat-aa944e",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-s25-ultra-sm-s938b-ds-12gb-256gb-cty-da-kich-hoat-aa944e.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 24990000,
+          "original_price_vnd": 33380000,
+          "discount_percentage": 25,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 25% từ 33,380,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-a56-5g-sm-a566f-ds-cty-da-kich-hoat-f1920e",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-a56-5g-sm-a566f-ds-8gb-128gb-cty-da-kich-hoat-f1920e.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 7790000,
+          "original_price_vnd": 9810000,
+          "discount_percentage": 20,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 20% từ 9,810,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-z-fold-7-5g",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-z-fold-7-5g-512gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 45990000,
+          "original_price_vnd": 50990000,
+          "discount_percentage": 9,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 9% từ 50,990,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-a06-5g",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-a06-5g-128gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 2890000,
+          "original_price_vnd": 3920000,
+          "discount_percentage": 26,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 26% từ 3,920,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "iphone-16-pro",
+    "source_url": "https://didongviet.vn/dien-thoai/iphone-16-pro.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 4000000,
+          "original_price_vnd": 4000000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 4,000,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "apple-iphone-16-pro-cty-a091bc",
+    "source_url": "https://didongviet.vn/dien-thoai/apple-iphone-16-pro-256gb-cty-a091bc.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 4000000,
+          "original_price_vnd": 4000000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 4,000,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-z-flip-7-5g",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-z-flip-7-5g-512gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 28490000,
+          "original_price_vnd": 32990000,
+          "discount_percentage": 13,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 13% từ 32,990,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "samsung-galaxy-a34",
+    "source_url": "https://didongviet.vn/dien-thoai/samsung-galaxy-a34-128gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 5790000,
+          "original_price_vnd": 8490000,
+          "discount_percentage": 31,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 31% từ 8,490,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "apple-iphone-16-cty-06adc2",
+    "source_url": "https://didongviet.vn/dien-thoai/apple-iphone-16-128gb-cty-06adc2.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 4000000,
+          "original_price_vnd": 4000000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 4,000,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "apple-iphone-16-cty-2491da",
+    "source_url": "https://didongviet.vn/dien-thoai/apple-iphone-16-256gb-cty-2491da.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 4000000,
+          "original_price_vnd": 4000000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 4,000,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "iphone-16e",
+    "source_url": "https://didongviet.vn/dien-thoai/iphone-16e-128gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 15290000,
+          "original_price_vnd": 16990000,
+          "discount_percentage": 10,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 10% từ 16,990,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "iphone-16-plus",
+    "source_url": "https://didongviet.vn/dien-thoai/iphone-16-plus.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 4000000,
+          "original_price_vnd": 4000000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 4,000,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "apple-iphone-16e",
+    "source_url": "https://didongviet.vn/dien-thoai/apple-iphone-16e-256gb.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 18390000,
+          "original_price_vnd": 19990000,
+          "discount_percentage": 8,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá khuyến mãi: giảm 8% từ 19,990,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  },
+  {
+    "product_id": "apple-iphone-16-plus-cty-5fd52c",
+    "source_url": "https://didongviet.vn/dien-thoai/apple-iphone-16-plus-256gb-cty-5fd52c.html",
+    "last_updated_at": "2025-08-25T16:21:40Z",
+    "pricing": {
+      "current_prices": [
+        {
+          "variant": "Giá hiện tại",
+          "price_vnd": 4000000,
+          "original_price_vnd": 4000000,
+          "discount_percentage": 0,
+          "currency": "VND"
+        }
+      ],
+      "price_note": "Giá hiện tại: 4,000,000đ",
+      "payment_options": [
+        "Trả góp 0% lãi suất",
+        "Thu cũ đổi mới với giá thu cao",
+        "Thanh toán tiền mặt hoặc thẻ"
+      ]
+    },
+    "promotions": {
+      "time_limited": [
+        {
+          "period": "Đang cập nhật",
+          "description": "Khuyến mãi đặc biệt",
+          "type": "special_offer"
+        }
+      ],
+      "free_gifts": [
+        {
+          "item": "Phụ kiện chính hãng",
+          "condition": "Tặng kèm khi mua sản phẩm",
+          "type": "product_bundle"
+        }
+      ],
+      "vouchers": [
+        {
+          "description": "Voucher giảm giá",
+          "type": "discount_voucher"
+        }
+      ],
+      "special_discounts": [
+        {
+          "description": "Giảm giá đặc biệt",
+          "target": "Khách hàng mới",
+          "type": "new_customer_discount"
+        }
+      ],
+      "bundle_offers": [
+        {
+          "product": "Phụ kiện đi kèm",
+          "discount": "Giảm giá khi mua combo",
+          "type": "accessory_bundle"
+        }
+      ],
+      "business_offers": [
+        {
+          "description": "Báo giá đặc biệt cho doanh nghiệp",
+          "contact": "1800.6018",
+          "type": "business_pricing"
+        }
+      ]
+    },
+    "availability": {
+      "status": "in_stock",
+      "delivery": "Giao hàng nhanh trong 2-24h",
+      "warranty": "Bảo hành chính hãng 12 tháng"
+    }
+  }
+]

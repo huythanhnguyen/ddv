@@ -173,6 +173,8 @@ venv.bak/
 
 # Google credentials and sensitive files
 google-credentials/
+
+# JSON files - allow specific data files
 *.json
 !package.json
 !package-lock.json
@@ -187,6 +189,25 @@ google-credentials/
 !**/data/mm_data_index.py
 !**/data/MM_general_data/*.json
 !openapi/*.json
+
+# Allow profiles data files
+!profiles/*.json
+!profiles/backups/*.json
+
+# Database files - allow SQLite and Meilisearch data
+*.db
+*.sqlite
+*.sqlite3
+!ddv.sqlite3
+!app/ddv.sqlite3
+!frontend/ddv.sqlite3
+
+# Meilisearch data directory
+!data.ms/
+!data.ms/**/*
+
+# Meilisearch binary
+!meilisearch
 
 # IDE and editor files
 .vscode/
@@ -241,6 +262,7 @@ common/autoinstallers/*/.npmrc
 # Temporary files
 *.tmp
 *.temp
+ys
 
 # Local development files
 .local
