@@ -293,3 +293,7 @@ docs/_build/
 
 # TypeScript
 *.tsbuildinfo
+
+# Ignore meilisearch binary
+meilisearch
+
