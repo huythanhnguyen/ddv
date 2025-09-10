@@ -11,8 +11,15 @@ from pathlib import Path
 from datetime import datetime
 import re
 
-import meilisearch
-from meilisearch.errors import MeilisearchError
+try:
+    import meilisearch
+    from meilisearch.errors import MeilisearchError
+    MEILISEARCH_AVAILABLE = True
+except ImportError:
+    # Fallback when meilisearch is not available
+    MEILISEARCH_AVAILABLE = False
+    meilisearch = None
+    MeilisearchError = Exception
 
 from app.config import meilisearch_config
 from .gemini_utils_tool import gemini_utils
@@ -91,6 +98,11 @@ class MeilisearchEngine:
     # ------------------------- Client/Index ------------------------
     def _setup_meilisearch_client(self):
         """Setup Meilisearch client"""
+        if not MEILISEARCH_AVAILABLE:
+            logger.warning("Meilisearch not available, using fallback mode")
+            self.client = None
+            return
+            
         try:
             # Create client without API key for local development
             if meilisearch_config.api_key:
@@ -126,7 +138,7 @@ class MeilisearchEngine:
     def _setup_index(self):
         """Setup Meilisearch index with proper configuration"""
         if not self.client:
-            logger.error("❌ Meilisearch client not available")
+            logger.warning("❌ Meilisearch client not available, using fallback mode")
             return
         
         try:
