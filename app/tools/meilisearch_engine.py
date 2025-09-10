@@ -455,6 +455,17 @@ class MeilisearchEngine:
             return []
         
         query_lower = query.lower()
+        # Vietnamese → keyword enrichment for better recall without LLM
+        vn_to_keyword = {
+            "chụp hình": "camera",
+            "chụp ảnh": "camera",
+            "quay phim": "camera",
+            "pin trâu": "pin",
+            "màn hình đẹp": "màn hình",
+        }
+        for phrase, kw in vn_to_keyword.items():
+            if phrase in query_lower:
+                query_lower += f" {kw}"
         results = []
         
         for product in self.products:

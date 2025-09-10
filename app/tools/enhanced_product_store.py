@@ -11,6 +11,12 @@ from datetime import datetime
 # Meilisearch Engine import
 from .meilisearch_engine import MeilisearchEngine
 from .gemini_utils_tool import gemini_utils
+# Fallback NLP extractors (non-LLM)
+from app.shared_libraries.utils import (
+    extract_budget_from_text as fallback_extract_budget,
+    extract_brands_from_text as fallback_extract_brands,
+    extract_features_from_text as fallback_extract_features,
+)
 
 # Get the project root directory
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -65,30 +71,57 @@ class EnhancedProductStore:
         
         try:
             # Use Gemini AI to optimize search query and extract filters
-            optimized_query = query
+            optimized_query = query or ""
             enhanced_filters = filters or {}
-            
+
             if query:
-                # Analyze search intent and optimize query
-                search_intent = gemini_utils.analyze_search_intent(query)
-                
-                # Use optimized query if available
-                if search_intent.get('search_query'):
-                    optimized_query = search_intent['search_query']
-                    print(f"🔍 AI optimized query: '{query}' → '{optimized_query}'")
-                
-                # Extract additional filters from natural language
-                budget_min, budget_max = gemini_utils.extract_budget_from_text(query)
-                if budget_min is not None or budget_max is not None:
-                    enhanced_filters['price_min'] = budget_min
-                    enhanced_filters['price_max'] = budget_max
-                    print(f"💰 AI extracted budget: {budget_min}-{budget_max}")
-                
-                brands = gemini_utils.extract_brands_from_text(query)
-                if brands:
-                    enhanced_filters['brand'] = brands[0]  # Use first brand for filter
-                    print(f"🏷️ AI extracted brand: {brands}")
-            
+                if gemini_utils.is_available():
+                    # Analyze search intent and optimize query (LLM-powered)
+                    search_intent = gemini_utils.analyze_search_intent(query)
+                    if search_intent.get('search_query'):
+                        optimized_query = search_intent['search_query']
+                        print(f"🔍 AI optimized query: '{query}' → '{optimized_query}'")
+
+                    # Extract additional filters from natural language (LLM-powered)
+                    budget_min, budget_max = gemini_utils.extract_budget_from_text(query)
+                    if budget_min is not None or budget_max is not None:
+                        enhanced_filters['price_min'] = budget_min
+                        enhanced_filters['price_max'] = budget_max
+                        print(f"💰 AI extracted budget: {budget_min}-{budget_max}")
+
+                    brands = gemini_utils.extract_brands_from_text(query)
+                    if brands:
+                        enhanced_filters['brand'] = brands[0]
+                        print(f"🏷️ AI extracted brand: {brands}")
+                else:
+                    # Heuristic fallback (no LLM)
+                    budget_min, budget_max = fallback_extract_budget(query)
+                    if budget_min is not None or budget_max is not None:
+                        enhanced_filters['price_min'] = budget_min
+                        enhanced_filters['price_max'] = budget_max
+
+                    fb_brands = fallback_extract_brands(query)
+                    if fb_brands:
+                        enhanced_filters['brand'] = fb_brands[0]
+
+                    # Feature-based keyword enrichment to improve recall
+                    fb_features = set(fallback_extract_features(query))
+                    vn_to_keyword = {
+                        "chụp hình": "camera",
+                        "chụp ảnh": "camera",
+                        "quay phim": "camera",
+                        "chơi game": "chip",
+                        "pin trâu": "pin",
+                        "màn hình đẹp": "màn hình",
+                    }
+                    lowered = query.lower()
+                    for phrase, kw in vn_to_keyword.items():
+                        if phrase in lowered:
+                            fb_features.add(kw)
+                    # If we have meaningful features, append to query string
+                    if fb_features:
+                        optimized_query = (optimized_query + " " + " ".join(sorted(fb_features))).strip()
+
             # Use Meilisearch engine with AI-enhanced parameters
             results = self.search_engine.search_products(
                 query=optimized_query, 

@@ -24,16 +24,22 @@ class GeminiUtilsTool:
         """Initialize Gemini client"""
         try:
             api_key = os.environ.get("GEMINI_API_KEY")
-            if not api_key:
-                logger.warning("⚠️ GEMINI_API_KEY not found in environment variables - Gemini features will be disabled")
+            if not api_key or api_key == "your_gemini_api_key_here":
+                logger.warning("⚠️ GEMINI_API_KEY not found or invalid - Gemini features will be disabled")
                 logger.info("💡 To enable Gemini features, set GEMINI_API_KEY in your environment or .env file")
                 self.client = None
                 return
             
             self.client = genai.Client(api_key=api_key)
+            # Test the client with a simple call
+            test_response = self.client.models.generate_content(
+                model=self.model,
+                contents=[types.Content(role="user", parts=[types.Part.from_text(text="test")])],
+            )
             logger.info("✅ Gemini Utils Tool initialized successfully")
         except Exception as e:
             logger.error(f"❌ Failed to initialize Gemini client: {e}")
+            logger.warning("⚠️ Gemini features will be disabled - using fallback methods")
             self.client = None
     
     def is_available(self) -> bool:
