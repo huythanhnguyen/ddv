@@ -56,16 +56,17 @@ class GeminiSearchConfig:
 @dataclass
 class MeilisearchConfig:
     """Configuration for Meilisearch Engine."""
-    
+
     url: str = "http://localhost:7700"
     api_key: Optional[str] = None
-    index_name: str = "ddv_products"
+    index_name: str = "products"  # Changed to match the index we created
     max_results: int = 20
     timeout: int = 30
-    
+
     def __post_init__(self):
         self.url = os.getenv("MEILISEARCH_URL", self.url)
-        self.api_key = os.getenv("MEILISEARCH_API_KEY", self.api_key)
+        # Don't require API key for local development
+        self.api_key = os.getenv("MEILISEARCH_API_KEY", None)
 
 
 config = ModelConfiguration()

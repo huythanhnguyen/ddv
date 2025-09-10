@@ -39,6 +39,8 @@ export default function App() {
   const [isCheckingBackend, setIsCheckingBackend] = useState(true);
   const currentAgentRef = useRef('');
   const accumulatedTextRef = useRef("");
+  // Buffer to assemble SSE JSON chunks safely
+  const sseBufferRef = useRef<string>("");
   const scrollAreaRef = useRef<HTMLDivElement | null>(null);
   // Get API base URL from environment variable or fallback
   const getApiBase = () => {
@@ -214,6 +216,18 @@ export default function App() {
     } catch (error) {
       console.error('[SSE EXTRACT] Error parsing SSE data:', error);
       return { textParts: [], agent: '', finalReportWithCitations: undefined, lastCoordinatorResponse: undefined, functionCall: null, functionResponse: null, sources: null };
+    }
+  };
+
+  // Try to parse buffered SSE JSON safely. Returns true if parsed and processed.
+  const tryProcessBufferedSseJson = (candidateJson: string, aiMessageId: string): boolean => {
+    try {
+      JSON.parse(candidateJson);
+      // If parsing succeeds, delegate to existing handler
+      processSseEventData(candidateJson, aiMessageId);
+      return true;
+    } catch {
+      return false;
     }
   };
 
@@ -477,7 +491,20 @@ export default function App() {
                 
                 if (data.trim()) {
                   console.log('[SSE] Received data line:', data.substring(0, 200) + '...');
-                  processSseEventData(data, aiMessageId);
+                  // Buffer chunks to avoid "Unterminated string" when JSON spans multiple tcp frames
+                  sseBufferRef.current += data;
+                  // Fast path: try parse current buffer
+                  if (tryProcessBufferedSseJson(sseBufferRef.current, aiMessageId)) {
+                    // Reset buffer if parsed
+                    sseBufferRef.current = '';
+                  } else {
+                    // If cannot parse yet, keep waiting for more chunks
+                    // Avoid unbounded growth: if buffer too large, flush first 2000 chars for safety
+                    if (sseBufferRef.current.length > 200000) {
+                      console.warn('[SSE] Buffer too large, flushing');
+                      sseBufferRef.current = '';
+                    }
+                  }
                 }
               }
             }
@@ -485,6 +512,11 @@ export default function App() {
           
           console.log('[SSE] Reader finished without [DONE] marker');
           console.log('[SSE] Final accumulated text:', accumulatedTextRef.current.substring(0, 200) + '...');
+          // Try final parse of leftover buffer
+          if (sseBufferRef.current.trim()) {
+            tryProcessBufferedSseJson(sseBufferRef.current, aiMessageId);
+            sseBufferRef.current = '';
+          }
           // Render final accumulated content even if [DONE] wasn't sent
           const finalContent = accumulatedTextRef.current;
           const finalProductData = extractProductData(finalContent);

@@ -92,10 +92,14 @@ class MeilisearchEngine:
     def _setup_meilisearch_client(self):
         """Setup Meilisearch client"""
         try:
-            self.client = meilisearch.Client(
-                url=meilisearch_config.url,
-                api_key=meilisearch_config.api_key
-            )
+            # Create client without API key for local development
+            if meilisearch_config.api_key:
+                self.client = meilisearch.Client(
+                    url=meilisearch_config.url,
+                    api_key=meilisearch_config.api_key
+                )
+            else:
+                self.client = meilisearch.Client(meilisearch_config.url)
             
             # Test connection
             health = self.client.health()
@@ -601,4 +605,8 @@ class MeilisearchEngine:
                 "message": f"Lỗi khi phân tích sản phẩm: {str(e)}",
                 "analysis": {}
             }
+
+    def search(self, query: str, limit: int = 20, filters: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """Search products using Meilisearch - simplified interface"""
+        return self.search_products(query, filters, limit)
 

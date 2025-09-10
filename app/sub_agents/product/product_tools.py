@@ -4,6 +4,7 @@ Refactored and optimized product search and comparison tools
 """
 
 import logging
+import json
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 import sys
@@ -182,6 +183,13 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
             "message": f"Tìm thấy {len(ui_products)} sản phẩm phù hợp với yêu cầu của bạn",
             "products": ui_products
         }
+        try:
+            compact_payload = json.dumps(product_display, ensure_ascii=False, separators=(",", ":"))
+            logger.info("[PAYLOAD] product_display_json_length=%d head=%s tail=%s",
+                        len(compact_payload), compact_payload[:200], compact_payload[-200:])
+        except Exception as e:
+            logger.warning("[PAYLOAD] Failed to serialize product_display: %s", e)
+            compact_payload = ""
         
         # Add search metadata
         search_metadata = {
@@ -206,11 +214,12 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
             recommendation_text = gemini_utils.generate_product_recommendation(user_requirements, ui_products[:3])
             logger.info(f"💡 Generated recommendation: {recommendation_text[:100]}...")
         
-        return {
+        result_payload = {
             "success": True,
             "products": products,  # Raw product data
             "total_found": len(ui_products),
             "product_display": product_display,
+            "product_display_json": compact_payload,
             "recommendation": recommendation_text,
             "search_metadata": search_metadata,
             "criteria": {
@@ -223,6 +232,9 @@ def enhanced_product_search_tool(user_input: str) -> Dict[str, Any]:
                 "search_intent": search_intent
             }
         }
+        logger.info("✅ Returning payload with total_found=%d compact_json_len=%d",
+                    result_payload["total_found"], len(compact_payload))
+        return result_payload
         
     except ProductToolsError as e:
         logger.error(f"❌ Product tools error: {e}")
