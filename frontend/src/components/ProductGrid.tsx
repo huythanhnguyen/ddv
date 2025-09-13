@@ -3,7 +3,7 @@ import ProductCard from '@/components/ProductCard';
 import { ProductGridProps } from '@/types/product';
 import { cartService } from '@/services/cartService';
 
-const ProductGrid: React.FC<ProductGridProps> = ({ 
+const ProductGrid: React.FC<ProductGridProps> = React.memo(({ 
   products, 
   onAddToCart, 
   onViewDetails 
@@ -15,6 +15,19 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     console.log('[ProductGrid] Products type:', typeof products);
     console.log('[ProductGrid] Products length:', products?.length);
     console.log('[ProductGrid] Products array:', Array.isArray(products));
+  }
+  
+  // Handle error cases
+  if (!products) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[ProductGrid] Products is null/undefined');
+    }
+    return (
+      <div className="text-center py-8 text-gray-500">
+        <div className="text-red-500 mb-2">⚠️</div>
+        <div>Không có dữ liệu sản phẩm</div>
+      </div>
+    );
   }
   
   const handleAddToCart = async (product: any) => {
@@ -57,13 +70,45 @@ const ProductGrid: React.FC<ProductGridProps> = ({
     );
   }
   
-  // Filter out invalid products
-  const validProducts = products.filter(product => 
-    product && 
-    product.id && 
-    product.name && 
-    product.price
-  );
+  // Filter out invalid products with detailed validation
+  const validProducts = products.filter(product => {
+    if (!product || typeof product !== 'object') {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[ProductGrid] Invalid product - not an object:', product);
+      }
+      return false;
+    }
+    
+    // Check required fields
+    if (!product.id || !product.name || !product.price) {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[ProductGrid] Invalid product - missing required fields:', {
+          id: product.id,
+          name: product.name,
+          price: product.price
+        });
+      }
+      return false;
+    }
+    
+    // Validate price structure
+    if (!product.price.current || typeof product.price.current !== 'number') {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[ProductGrid] Invalid product - invalid price:', product.price);
+      }
+      return false;
+    }
+    
+    // Validate image structure
+    if (!product.image || !product.image.url || typeof product.image.url !== 'string') {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[ProductGrid] Invalid product - invalid image:', product.image);
+      }
+      return false;
+    }
+    
+    return true;
+  });
   
   if (validProducts.length === 0) {
     if (process.env.NODE_ENV === 'development') {
@@ -108,6 +153,8 @@ const ProductGrid: React.FC<ProductGridProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ProductGrid.displayName = 'ProductGrid';
 
 export default ProductGrid; 

@@ -1,29 +1,23 @@
 """
-Tools module for DDV Product Advisor
-Centralized import and organization of all tools
+Simple Tools module for DDV Product Advisor
+Clean, simple tools for product search and exploration
 """
 
-# Core search engines
-from .meilisearch_engine import MeilisearchEngine
-from .gemini_search_engine import GeminiSearchEngine
+# Simple search engine
+from .meilisearch_simple import SimpleMeilisearchEngine
 
-# Product store and data management
-from .enhanced_product_store import EnhancedProductStore, enhanced_data_store
-
-# Tools manager
-from .tools_manager import ToolsManager, tools_manager
+# Simple tools
+from .search import search_products
+from .explore import explore_product
+from .compare import compare_products
 
 # Export all tools and classes
 __all__ = [
-    # Search engines
-    "MeilisearchEngine",
-    "GeminiSearchEngine", 
+    # Search engine
+    "SimpleMeilisearchEngine",
     
-    # Product store
-    "EnhancedProductStore",
-    "enhanced_data_store",
-    
-    # Tools manager
-    "ToolsManager",
-    "tools_manager",
+    # Tools
+    "search_products",
+    "explore_product", 
+    "compare_products",
 ]

@@ -30,6 +30,14 @@ export function parseMessage(content: string): ParsedMessage {
     console.log('[MessageParser] Parsing message:', content.substring(0, 200) + '...');
   }
   
+  // Handle error messages first
+  if (content.includes('Lỗi khi') || content.includes('Error:') || content.includes('Exception:')) {
+    return {
+      type: 'text',
+      text: content
+    };
+  }
+  
   // Try multiple JSON detection patterns
   let jsonText = '';
   
@@ -191,6 +199,45 @@ export function parseMessage(content: string): ParsedMessage {
         if (process.env.NODE_ENV === 'development') {
           console.log('[MessageParser] Detected product-display with', parsedData.products.length, 'products');
         }
+        
+        // Validate and clean product data
+        const validProducts = parsedData.products.filter(product => {
+          if (!product || typeof product !== 'object') return false;
+          
+          // Check required fields
+          const hasRequiredFields = product.id && product.name && product.price && product.image;
+          if (!hasRequiredFields) {
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('[MessageParser] Invalid product missing required fields:', product);
+            }
+            return false;
+          }
+          
+          // Validate price structure
+          if (!product.price.current || typeof product.price.current !== 'number') {
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('[MessageParser] Invalid product price:', product.price);
+            }
+            return false;
+          }
+          
+          // Validate image structure
+          if (!product.image.url || typeof product.image.url !== 'string') {
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('[MessageParser] Invalid product image:', product.image);
+            }
+            return false;
+          }
+          
+          return true;
+        });
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[MessageParser] Valid products after filtering:', validProducts.length);
+        }
+        
+        // Update parsedData with validated products
+        parsedData.products = validProducts;
         
         // Clean the text by removing the JSON part
         let cleanText = content;
@@ -397,6 +444,79 @@ export function cleanMessageText(content: string): string {
   return cleanedContent.trim();
 }
 
+export function isErrorMessage(content: string): boolean {
+  const errorPatterns = [
+    /Lỗi khi/,
+    /Rất tiếc, đã xảy ra lỗi/,
+    /Error:/,
+    /Exception:/,
+    /Traceback/,
+    /TypeError/,
+    /ValueError/,
+    /AttributeError/,
+    /KeyError/,
+    /float\(\) argument must be/,
+    /not 'dict'/,
+    /not 'str'/,
+    /not 'int'/,
+    /đã xảy ra lỗi/,
+    /không thể/,
+    /thất bại/
+  ];
+  
+  return errorPatterns.some(pattern => pattern.test(content));
+}
+
+export function extractErrorDetails(content: string): { type: string; message: string; suggestion?: string } | null {
+  if (!isErrorMessage(content)) return null;
+  
+  // Common error patterns and their suggestions
+  const errorMappings = [
+    {
+      pattern: /float\(\) argument must be a string or a real number, not 'dict'/,
+      type: 'Data Type Error',
+      message: 'Lỗi chuyển đổi kiểu dữ liệu - đang cố gắng chuyển đổi từ điển thành số',
+      suggestion: 'Cần kiểm tra và sửa lỗi xử lý dữ liệu sản phẩm'
+    },
+    {
+      pattern: /Rất tiếc, đã xảy ra lỗi khi lấy thông tin chi tiết/,
+      type: 'Product Detail Error',
+      message: 'Không thể lấy thông tin chi tiết sản phẩm',
+      suggestion: 'Vui lòng thử lại hoặc chọn sản phẩm khác'
+    },
+    {
+      pattern: /Lỗi khi so sánh sản phẩm/,
+      type: 'Product Comparison Error',
+      message: 'Không thể so sánh sản phẩm',
+      suggestion: 'Vui lòng thử lại với các sản phẩm khác'
+    },
+    {
+      pattern: /Không tìm thấy sản phẩm/,
+      type: 'Product Not Found',
+      message: 'Không tìm thấy sản phẩm phù hợp',
+      suggestion: 'Vui lòng thử tìm kiếm với từ khóa khác'
+    },
+    {
+      pattern: /đã xảy ra lỗi/,
+      type: 'General Error',
+      message: 'Đã xảy ra lỗi trong quá trình xử lý',
+      suggestion: 'Vui lòng thử lại sau'
+    }
+  ];
+  
+  for (const mapping of errorMappings) {
+    if (mapping.pattern.test(content)) {
+      return mapping;
+    }
+  }
+  
+  return {
+    type: 'Unknown Error',
+    message: 'Đã xảy ra lỗi không xác định',
+    suggestion: 'Vui lòng thử lại sau'
+  };
+}
+
 // Test function for debugging (only in development)
 export function testMessageParser() {
   if (process.env.NODE_ENV !== 'development') {
@@ -418,6 +538,16 @@ export function testMessageParser() {
       name: 'Duplicate greeting message',
       content: 'Chào bạn! Rất vui được gặp bạn. Tôi có thể giúp bạn tìm hiểu thông tin về Di Động Việt.\nChào bạn! Rất vui được gặp bạn. Tôi có thể giúp bạn tìm hiểu thông tin về Di Động Việt.',
       expected: 'text'
+    },
+    {
+      name: 'Error message detection',
+      content: 'Rất tiếc, đã xảy ra lỗi khi lấy thông tin chi tiết về iPhone 16 Pro Max 512GB. Tuy nhiên, tôi có thể cung cấp cho bạn thông tin tóm tắt sau:',
+      expected: 'text'
+    },
+    {
+      name: 'Error message with product data',
+      content: 'Rất tiếc, đã xảy ra lỗi khi lấy thông tin chi tiết về iPhone 16 Pro Max 512GB. Tuy nhiên, tôi có thể cung cấp cho bạn thông tin tóm tắt sau:\n\n{"type": "product-display", "message": "Test", "products": []}',
+      expected: 'product-display'
     }
   ];
   

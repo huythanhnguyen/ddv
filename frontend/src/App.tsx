@@ -394,7 +394,7 @@ export default function App() {
 
     console.log('[RUN AGENT] Request body:', JSON.stringify(requestBody, null, 2));
 
-    const response = await fetch(`${API_BASE}/run_sse`, {
+    const response = await fetch(`${API_BASE}/run`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -416,20 +416,66 @@ export default function App() {
 
     const contentType = response.headers.get('content-type') || '';
     if (!contentType.includes('text/event-stream')) {
-      // Non-streaming or error payload: render final content immediately
+      // Non-streaming response from /run endpoint
       const bodyText = await response.text();
-      const fallbackText = bodyText || 'Xin lỗi, đã có lỗi khi xử lý phản hồi.';
-      const finalProductData = extractProductData(fallbackText);
+      console.log('[RUN AGENT] Non-streaming response:', bodyText);
+      
+      // Try to parse as JSON array (new ADK format)
+      try {
+        const responseData = JSON.parse(bodyText);
+        if (Array.isArray(responseData)) {
+          // Extract product data from functionResponse
+          let productData = null;
+          let finalText = '';
+          
+          for (const event of responseData) {
+            if (event.content?.parts) {
+              for (const part of event.content.parts) {
+                if (part.functionResponse?.response?.result) {
+                  try {
+                    const resultData = JSON.parse(part.functionResponse.response.result);
+                    if (resultData.type === 'product-display' && resultData.products) {
+                      productData = resultData;
+                    }
+                  } catch (e) {
+                    console.warn('[RUN AGENT] Failed to parse function response:', e);
+                  }
+                } else if (part.text) {
+                  finalText = part.text;
+                }
+              }
+            }
+          }
+          
+          const aiMessageId = (Date.now() + 1).toString();
+          
+          setMessages(prev => [...prev, {
+            type: 'ai',
+            content: finalText || bodyText,
+            id: aiMessageId,
+            agent: currentAgentRef.current,
+            productData: productData || undefined,
+            finalReportWithCitations: !!productData
+          }]);
+          return finalText || bodyText;
+        }
+      } catch (e) {
+        console.warn('[RUN AGENT] Failed to parse response as JSON array:', e);
+      }
+      
+      // Fallback to original text parsing
+      const finalProductData = extractProductData(bodyText);
       const aiMessageId = (Date.now() + 1).toString();
+      
       setMessages(prev => [...prev, {
         type: 'ai',
-        content: fallbackText,
+        content: bodyText,
         id: aiMessageId,
         agent: currentAgentRef.current,
         productData: finalProductData || undefined,
         finalReportWithCitations: !!finalProductData
       }]);
-      return fallbackText;
+      return bodyText;
     }
 
     return new Promise((resolve, reject) => {

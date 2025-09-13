@@ -10,7 +10,7 @@ import { RotateCcw, Bot, User } from "lucide-react";
 import ProductGrid from "@/components/ProductGrid";
 import { ThinkingProcess } from "@/components/ThinkingProcess";
 import { TypingIndicator } from "@/components/TypingIndicator";
-import { parseMessage, testMessageParser } from "@/utils/messageParser";
+import { parseMessage, testMessageParser, isErrorMessage, extractErrorDetails } from "@/utils/messageParser";
 import { MessageWithAgent } from "@/types/chat";
 
 interface ProcessedEvent {
@@ -114,6 +114,8 @@ export function ChatMessagesView({
                      <div className="space-y-2 sm:space-y-3">
                        {(() => {
                          const parsedMessage = parseMessage(message.content);
+                         const isError = isErrorMessage(message.content);
+                         const errorDetails = isError ? extractErrorDetails(message.content) : null;
                          
                          // Debug logging only in development
                          if (process.env.NODE_ENV === 'development') {
@@ -122,12 +124,38 @@ export function ChatMessagesView({
                            console.log('[ChatMessagesView] Product data:', parsedMessage.productData);
                            console.log('[ChatMessagesView] Message productData:', message.productData);
                            console.log('[ChatMessagesView] Raw message content:', message.content.substring(0, 200) + '...');
+                           console.log('[ChatMessagesView] Is error:', isError);
+                           console.log('[ChatMessagesView] Error details:', errorDetails);
                          }
                          
                          return (
                            <>
+                             {/* Error Display - show for error messages */}
+                             {isError && errorDetails && (
+                               <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
+                                 <div className="flex items-start gap-2">
+                                   <div className="flex-shrink-0 w-5 h-5 text-red-500 mt-0.5">
+                                     ⚠️
+                                   </div>
+                                   <div className="flex-1">
+                                     <h4 className="text-sm font-medium text-red-800 mb-1">
+                                       {errorDetails.type}
+                                     </h4>
+                                     <p className="text-sm text-red-700 mb-2">
+                                       {errorDetails.message}
+                                     </p>
+                                     {errorDetails.suggestion && (
+                                       <p className="text-xs text-red-600">
+                                         💡 {errorDetails.suggestion}
+                                       </p>
+                                     )}
+                                   </div>
+                                 </div>
+                               </div>
+                             )}
+                             
                              {/* Thinking Process - show in collapsible for AI messages */}
-                             {message.type === "ai" && (
+                             {message.type === "ai" && !isError && (
                                <ThinkingProcess 
                                  thinkingContent={message.content} 
                                  agent={message.agent}
@@ -180,16 +208,20 @@ export function ChatMessagesView({
                                  {(() => {
                                    // Use real-time productData if available, otherwise use parsed message
                                    const productData = message.productData || parsedMessage.productData;
+                                   
+                                   // Only render if we have valid product data
+                                   if (!productData || !productData.products || !Array.isArray(productData.products) || productData.products.length === 0) {
+                                     return null;
+                                   }
+                                   
                                    return (
                                      <>
-                                       {productData && productData.message && (
+                                       {productData.message && (
                                          <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3">
                                            {productData.message}
                                          </p>
                                        )}
-                                       {productData && productData.products && (
-                                         <ProductGrid products={productData.products} />
-                                       )}
+                                       <ProductGrid products={productData.products} />
                                      </>
                                    );
                                  })()}
